@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { configure } from 'mobx';
 
 import { App } from 'components';
 
 import './index.css';
 
-configure({ enforceActions: 'always' });
+import * as mobx from 'mobx';
+
+window.mobx = mobx;
 
 ReactDOM.render(<App />, document.getElementById('root'));
