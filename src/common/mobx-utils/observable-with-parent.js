@@ -5,7 +5,7 @@ const parenter = {
     if (typeof value === 'object') {
       value.parent = target;
 
-      value = new Proxy(observableWithParent(value), parenter);
+      value = observableWithParent(value);
     }
 
     target[key] = value;
