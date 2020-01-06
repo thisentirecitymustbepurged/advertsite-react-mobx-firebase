@@ -2,7 +2,9 @@ import { observable } from 'mobx';
 
 const parenter = {
   set(target, key, value) {
-    if (typeof value === 'object') {
+    console.log({ target, key, value });
+
+    if (key !== 'parent' && typeof value === 'object') {
       value.parent = target;
 
       value = observableWithParent(value);
@@ -14,16 +16,19 @@ const parenter = {
   }
 };
 
-function observableWithParent(target) {
-  target = new Proxy(observable(target), parenter);
+function observableWithParent(obj) {
+  if (!obj.__IS_OBSERVABLE_WITH_PARENT__) {
+    obj.__IS_OBSERVABLE_WITH_PARENT__ = true;
+    obj = new Proxy(observable(obj), parenter);
+  }
 
-  Object.keys(target).forEach(key => {
-    if (target[key] && typeof target[key] === 'object') {
-      target[key] = observableWithParent(target[key]);
+  Object.keys(obj).forEach(key => {
+    if (key !== 'parent' && obj[key] && typeof obj[key] === 'object') {
+      obj[key] = observableWithParent(obj[key]);
     }
   });
 
-  return target;
+  return obj;
 }
 
 // create observable from nested object without any existing oversables

@@ -1,11 +1,9 @@
 import { mobxUtils } from 'common';
 
 const model = {
-  foo: 'bar'
+  shikaka: 'shikaka'
 };
 
-const instance = mobxUtils.observableWithParent(model);
+export const test = mobxUtils.observableWithParent(model);
 
-window.test = instance;
-
-export const test = instance;
+window.test = test;
