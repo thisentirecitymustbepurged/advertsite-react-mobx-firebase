@@ -22,6 +22,13 @@
     "comma-dangle": 0,
     "arrow-parens": 0,
     "no-use-before-define": 0,
-    "no-underscore-dangle": 0
+    "no-underscore-dangle": 0,
+    "object-curly-newline": 0,
+    "max-len": [
+      "error",
+      {
+        "code": 110
+      }
+    ]
   }
 }

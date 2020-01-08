@@ -11,6 +11,11 @@
 # production
 /build
 
+# config
+/src/config/*
+!/src/config/index.js
+!/src/config/constant.js
+
 # misc
 .DS_Store
 .env.local
