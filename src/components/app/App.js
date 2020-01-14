@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 
-import { entities, test } from 'store';
+import { entities } from 'store';
 
 import './App.css';
 
@@ -10,7 +10,8 @@ export const App = observer(() => {
 
   return (
     <div className="App">
-      {entities.parent.entities.test}
+      {/* {entities.someArray && entities.someArray[0]} */}
+      {/* {entities.someArray && entities.someArray.parent.parent.test.shikaka} */}
     </div>
   );
 });

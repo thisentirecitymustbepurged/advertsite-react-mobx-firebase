@@ -1,17 +1,23 @@
 import { observable } from 'mobx';
 import nativeArrayProperties from './native-array-properties.json';
 
+const assignParent = (target, key, value) => {
+  if (key !== 'parent' && typeof value === 'object') {
+    value = observableWithParent(value);
+
+    if (Array.isArray(value)) {
+      value.__STORE__.parent = target;
+    } else {
+      value.parent = target;
+    }
+  }
+
+  return value;
+};
+
 const objectParenter = {
   set(target, key, value) {
-    if (key !== 'parent' && typeof value === 'object') {
-      if (Array.isArray(value)) {
-        value.__STORE__.parent = target;
-      } else {
-        value.parent = target;
-      }
-
-      value = observableWithParent(value);
-    }
+    value = assignParent(target, key, value);
 
     target[key] = value;
 
@@ -21,6 +27,8 @@ const objectParenter = {
 
 const arrayParenter = {
   set(target, key, value) {
+    value = assignParent(target, key, value);
+
     if (nativeArrayProperties[key] || Number.isInteger(Number(key))) {
       target[key] = value;
     } else {
@@ -30,6 +38,7 @@ const arrayParenter = {
     return true;
   },
   get(target, key) {
+    console.log({ target, key });
     if (key === '__STORE__' || nativeArrayProperties[key] || typeof key === 'symbol' || Number.isInteger(Number(key))) {
       return target[key];
     }
