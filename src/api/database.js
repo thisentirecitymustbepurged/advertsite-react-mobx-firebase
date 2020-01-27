@@ -1,33 +1,36 @@
 import app from './app';
 
-const db = app.database();
+const db = app.firestore();
+const toObject = QueryDocumentSnapshot => QueryDocumentSnapshot.data();
+const toArray = QuerySnapshot => QuerySnapshot.docs.map(toObject);
+const getCollection = async Collection => {
+  const QuerySnapshot = await Collection.get();
 
-const ref = path => db.ref(path);
+  return toArray(QuerySnapshot);
+};
+const postCollection = async (Collection, document) => {
+  const DocumentReference = await Collection.add(document);
+
+  return DocumentReference;
+};
+const subscribeCollection = async (Collection, observer) => {
+  const wrappedObserver = QuerySnapshot => observer(toArray(QuerySnapshot));
+  const unsubscribe = Collection.onSnapshot(wrappedObserver);
+
+  return unsubscribe;
+};
+const collection = (...args) => {
+  const Collection = db.collection(...args);
+
+  return {
+    get: (...args) => getCollection(Collection, ...args),
+    post: (...args) => postCollection(Collection, ...args),
+    subscribe: (...args) => subscribeCollection(Collection, ...args),
+  };
+};
 
 export const database = {
-  get: (path, options) => {
-    const { orderBy, equalTo, limitToFirst, limitToLast, startAt, endAt } = options;
-    let query = ref(path);
-
-    if (orderBy) {
-      query = query[orderBy]();
-
-      if (equalTo) {
-        query = query.equalTo(equalTo);
-      }
-      if (limitToFirst) {
-        query = query.limitToFirst(limitToFirst);
-      }
-      if (limitToLast) {
-        query = query.limitToLast(limitToLast);
-      }
-      if (startAt) {
-        query = query.startAt(startAt);
-      }
-      if (endAt) {
-        query = query.endAt(endAt);
-      }
-    }
-    return query.once('value');
-  }
+  entities: collection('entities')
 };
+
+window.database = database;

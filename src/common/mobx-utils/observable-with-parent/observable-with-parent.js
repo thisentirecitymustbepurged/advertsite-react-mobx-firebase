@@ -38,7 +38,6 @@ const arrayParenter = {
     return true;
   },
   get(target, key) {
-    console.log({ target, key });
     if (key === '__STORE__' || nativeArrayProperties[key] || typeof key === 'symbol' || Number.isInteger(Number(key))) {
       return target[key];
     }

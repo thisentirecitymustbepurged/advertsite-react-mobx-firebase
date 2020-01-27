@@ -6,11 +6,12 @@ import { entities } from 'store';
 import './App.css';
 
 export const App = observer(() => {
-  console.log('render');
+  console.log('render', entities);
 
   return (
     <div className="App">
-      {/* {entities.someArray && entities.someArray[0]} */}
+      {entities.map(({ name }) => name)}
+      {/* {entities.someArray && entities.someArray.parent.parent.entities.someArray[0][0].name.parent} */}
       {/* {entities.someArray && entities.someArray.parent.parent.test.shikaka} */}
     </div>
   );

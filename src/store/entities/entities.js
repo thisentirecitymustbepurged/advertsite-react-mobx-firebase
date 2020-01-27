@@ -1,7 +1,33 @@
 import { mobxUtils } from 'common';
+import { database } from 'api';
+import { entity } from './entity';
 
-const model = ['a', 'b', 'c'];
+const creator = initial => {
+  const entities = mobxUtils.observableWithParent(initial);
 
-export const entities = mobxUtils.observableWithParent(model);
+  entities.update = array => {
+    entities.length = 0;
 
-window.entities = entities;
+    entities.push(...array.map(entity.creator));
+  };
+  entities.post = async () => {
+    const res = await database.entities.post();
+
+    return res;
+  };
+  entities.get = async () => {
+    const res = await database.entities.get();
+
+    entities.update(res);
+  };
+  entities.subscribe = async () => {
+    const unsubscribe = await database.entities.subscribe(entities.update);
+
+    entities.unsubscribe = unsubscribe;
+  };
+  entities.creator = creator;
+
+  return entities;
+};
+
+export const entities = creator([]);
